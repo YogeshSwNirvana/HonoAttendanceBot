@@ -1,11 +1,11 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
-//string email = Environment.GetEnvironmentVariable("HONO_USERNAME");
-//string password = Environment.GetEnvironmentVariable("HONO_PASSWORD");
+string email = Environment.GetEnvironmentVariable("HONO_USERNAME");
+string password = Environment.GetEnvironmentVariable("HONO_PASSWORD");
 
-string email = "595";
-string password = "YHRR#spain#2028";
+//string email = "595";
+//string password = "YHRR#spain#2028";
 
 var options = new ChromeOptions();
 options.AddArgument("--headless");
