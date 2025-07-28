@@ -2,8 +2,8 @@ name: Daily Attendance
 
 on:
   schedule:
-    - cron: '30 5 * * *'   # 11:00 AM IST
-    - cron: '30 15 * * *'  # 9:00 PM IST
+    - cron: '10 4 * * *'   # 11:00 AM IST (UTC +5:30)
+    - cron: '30 15 * * *'  # 9:00 PM IST (UTC +5:30)
   workflow_dispatch:
 
 jobs:
@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Log current UTC and IST time
+      run: |
+        echo "⏰ Current UTC Time: $(date -u)"
+        echo "⏰ Approx IST Time: $(TZ='Asia/Kolkata' date)"
+
     - name: Checkout repo
       uses: actions/checkout@v3
 
@@ -33,4 +38,14 @@ jobs:
       env:
         HONO_USERNAME: ${{ secrets.HONO_USERNAME }}
         HONO_PASSWORD: ${{ secrets.HONO_PASSWORD }}
-      run: dotnet run --project AttendanceBot
+      run: |
+        echo "🚀 Running Attendance Script..."
+        dotnet run --project AttendanceBot
+
+    - name: Notify Success
+      if: success()
+      run: echo "✅ Attendance successfully marked."
+
+    - name: Notify Failure
+      if: failure()
+      run: echo "❌ Attendance script failed. Check logs above."
