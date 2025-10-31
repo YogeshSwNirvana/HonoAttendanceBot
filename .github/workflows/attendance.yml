@@ -29,14 +29,22 @@ jobs:
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo apt install -y ./google-chrome-stable_current_amd64.deb
 
-    - name: Remove old chromedriver
+    - name: Remove old ChromeDriver
       run: sudo rm -f /usr/bin/chromedriver /usr/local/bin/chromedriver || true
 
     - name: Install matching ChromeDriver
       run: |
-        CHROMEDRIVER_VERSION=142.0.7444.5900
-        wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-        unzip chromedriver_linux64.zip
+        # Get the installed Chrome major version (e.g., 130)
+        CHROME_VERSION=$(google-chrome --version | grep -oE "[0-9.]+" | cut -d "." -f1)
+        echo "Detected Chrome major version: $CHROME_VERSION"
+
+        # Get the latest matching ChromeDriver version for this Chrome version
+        DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}")
+        echo "Matching ChromeDriver version: $DRIVER_VERSION"
+
+        # Download and install the matching ChromeDriver
+        wget -N "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
+        unzip -o chromedriver_linux64.zip
         sudo mv chromedriver /usr/local/bin/chromedriver
         sudo chmod +x /usr/local/bin/chromedriver
 
@@ -51,4 +59,3 @@ jobs:
         HONO_USERNAME: ${{ secrets.HONO_USERNAME }}
         HONO_PASSWORD: ${{ secrets.HONO_PASSWORD }}
       run: dotnet run --project AttendanceBot
-      
