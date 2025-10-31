@@ -32,20 +32,22 @@ jobs:
     - name: Remove old ChromeDriver
       run: sudo rm -f /usr/bin/chromedriver /usr/local/bin/chromedriver || true
 
-    - name: Install matching ChromeDriver
+        - name: Install matching ChromeDriver
       run: |
-        # Get the installed Chrome major version (e.g., 130)
-        CHROME_VERSION=$(google-chrome --version | grep -oE "[0-9.]+" | cut -d "." -f1)
-        echo "Detected Chrome major version: $CHROME_VERSION"
+        set -e
+        # Get full Chrome version (e.g., 130.0.6723.91)
+        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+')
+        echo "Detected Chrome version: $CHROME_VERSION"
 
-        # Get the latest matching ChromeDriver version for this Chrome version
-        DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}")
+        # Get the latest compatible ChromeDriver version from Google Chrome Labs
+        DRIVER_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${CHROME_VERSION%%.*}")
         echo "Matching ChromeDriver version: $DRIVER_VERSION"
 
-        # Download and install the matching ChromeDriver
-        wget -N "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
+        # Download from the new official endpoint
+        wget -N "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${DRIVER_VERSION}/linux64/chromedriver-linux64.zip" -O chromedriver_linux64.zip
+
         unzip -o chromedriver_linux64.zip
-        sudo mv chromedriver /usr/local/bin/chromedriver
+        sudo mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
         sudo chmod +x /usr/local/bin/chromedriver
 
     - name: Check Chrome version
