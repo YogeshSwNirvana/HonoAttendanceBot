@@ -29,6 +29,9 @@ jobs:
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo apt install -y ./google-chrome-stable_current_amd64.deb
 
+    - name: Remove old chromedriver
+      run: sudo rm -f /usr/bin/chromedriver /usr/local/bin/chromedriver || true
+
     - name: Install matching ChromeDriver
       run: |
         CHROMEDRIVER_VERSION=142.0.7444.5900
@@ -48,3 +51,4 @@ jobs:
         HONO_USERNAME: ${{ secrets.HONO_USERNAME }}
         HONO_PASSWORD: ${{ secrets.HONO_PASSWORD }}
       run: dotnet run --project AttendanceBot
+      
