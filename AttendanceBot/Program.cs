@@ -15,7 +15,7 @@ options.AddArgument("--disable-dev-shm-usage");
 string? driverDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 var service = ChromeDriverService.CreateDefaultService(driverDirectory);
 
-Console.WriteLine("ChromeDriver Version: " + service.DriverVersion);
+//Console.WriteLine("ChromeDriver Version: " + service.DriverVersion);
 
 using var driver = new ChromeDriver(service, options);
 
@@ -58,3 +58,4 @@ finally
 {
     driver.Quit();
 }
+
